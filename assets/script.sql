@@ -10,7 +10,9 @@ CREATE DATABASE travelbuddy;
 -- Table des rôles
 CREATE TABLE roles (
     id_role SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
+    name VARCHAR(50) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Table des utilisateurs
@@ -34,7 +36,9 @@ CREATE TABLE badges (
     name VARCHAR(50) NOT NULL UNIQUE,
     description TEXT,
     points_required INT DEFAULT 0,
-    photo_url TEXT -- URL ou chemin de la photo du badge
+    photo_url TEXT, -- URL ou chemin de la photo du badge
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Table associant utilisateurs et badges (N-N)
@@ -42,6 +46,8 @@ CREATE TABLE users_badges (
     id_user INT NOT NULL,
     id_badge INT NOT NULL,
     earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_user, id_badge),
     FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE,
     FOREIGN KEY (id_badge) REFERENCES badges(id_badge) ON DELETE CASCADE
@@ -55,6 +61,7 @@ CREATE TABLE users_friends (
     id_friend INT NOT NULL,
     status VARCHAR(20) DEFAULT 'pending', -- pending, accepted, blocked
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_user, id_friend),
     FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE,
     FOREIGN KEY (id_friend) REFERENCES users(id_user) ON DELETE CASCADE,
@@ -62,11 +69,14 @@ CREATE TABLE users_friends (
 );
 
 -- Table des voyages
+-- Table des voyages
 CREATE TABLE travels (
     id_travel SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     description TEXT,
     destination VARCHAR(100),
+    latitude DECIMAL(12,9),  -- Haute précision
+    longitude DECIMAL(12,9), -- Haute précision
     start_date DATE,
     end_date DATE,
     id_user INT NOT NULL,
@@ -82,7 +92,11 @@ CREATE TABLE travel_activities (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     location VARCHAR(100),
+    latitude DECIMAL(12,9),
+    longitude DECIMAL(12,9),
     activity_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE
 );
 
@@ -93,15 +107,19 @@ CREATE TABLE travel_photos (
     id_activity INT,
     url TEXT NOT NULL,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE,
     FOREIGN KEY (id_activity) REFERENCES travel_activities(id_activity) ON DELETE CASCADE
 );
+
 
 -- Table des salons de chat
 CREATE TABLE chat_rooms (
     id_chat SERIAL PRIMARY KEY,
     name VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Table des messages de chat
@@ -111,6 +129,8 @@ CREATE TABLE chat_messages (
     id_sender INT NOT NULL,
     message TEXT NOT NULL,
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_chat) REFERENCES chat_rooms(id_chat) ON DELETE CASCADE,
     FOREIGN KEY (id_sender) REFERENCES users(id_user) ON DELETE CASCADE
 );
@@ -123,5 +143,6 @@ CREATE TABLE notifications (
     content TEXT,
     read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE
 );
