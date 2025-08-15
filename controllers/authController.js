@@ -92,3 +92,8 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
 };
+
+
+export const logout = (req, res) => {
+  res.json({ message: 'Déconnexion réussie' });
+};
