@@ -113,6 +113,18 @@ CREATE TABLE travel_photos (
     FOREIGN KEY (id_activity) REFERENCES travel_activities(id_activity) ON DELETE CASCADE
 );
 
+CREATE TABLE travel_routes (
+    id_route SERIAL PRIMARY KEY,
+    id_travel INT NOT NULL,
+    latitude DECIMAL(12,9) NOT NULL,
+    longitude DECIMAL(12,9) NOT NULL,
+    step_order INT NOT NULL, -- ordre dans l'itinéraire
+    description TEXT,        -- optionnel : nom ou info du point
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE
+);
+
 
 -- Table des salons de chat
 CREATE TABLE chat_rooms (
