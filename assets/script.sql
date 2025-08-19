@@ -100,7 +100,7 @@ CREATE TABLE travel_activities (
     FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE
 );
 
--- Table des photos de voyages ou activités
+
 CREATE TABLE travel_photos (
     id_photo SERIAL PRIMARY KEY,
     id_travel INT,
@@ -171,5 +171,17 @@ CREATE TABLE likes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_user, item_type, id_item),
+    FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE
+);
+
+
+CREATE TABLE comments (
+    id_comment SERIAL PRIMARY KEY,
+    id_user INT NOT NULL,
+    item_type VARCHAR(20) NOT NULL,   
+    id_item INT NOT NULL,             
+    content TEXT NOT NULL,            
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE
 );
