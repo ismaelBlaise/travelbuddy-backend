@@ -9,7 +9,7 @@ import {
 } from '../controllers/badgeController.js';
 import { authenticate } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/permission.js';
-import { validateBadgeData } from '../middlewares/validateBadge.js';
+import { validateBadgeData } from '../middlewares/badge.js';
 
 const router = express.Router();
  

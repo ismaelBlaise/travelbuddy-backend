@@ -115,14 +115,17 @@ CREATE TABLE travel_photos (
 
 CREATE TABLE travel_routes (
     id_route SERIAL PRIMARY KEY,
-    id_travel INT NOT NULL,
+    id_travel INT ,
+    id_activity INT,
+    destination VARCHAR(100) NOT NULL,
     latitude DECIMAL(12,9) NOT NULL,
     longitude DECIMAL(12,9) NOT NULL,
     step_order INT NOT NULL, -- ordre dans l'itinéraire
     description TEXT,        -- optionnel : nom ou info du point
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE
+    FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE,
+    FOREIGN KEY (id_activity) REFERENCES travel_activities(id_activity) ON DELETE CASCADE
 );
 
 
@@ -156,5 +159,17 @@ CREATE TABLE notifications (
     read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE
+);
+
+
+CREATE TABLE likes (
+    id_user INT NOT NULL,
+    item_type VARCHAR(20) NOT NULL,   
+    id_item INT NOT NULL,             
+    like_value INT DEFAULT 1,         
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_user, item_type, id_item),
     FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE
 );

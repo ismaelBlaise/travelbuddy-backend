@@ -2,7 +2,8 @@ import { Travel } from '../models/Travel.js';
 import { TravelPhoto } from '../models/TravelPhoto.js';
 import { User } from '../models/User.js';
 import axios from 'axios';
-
+import { TravelActivity } from '../models/TravelActivity.js';
+import { TravelRoute } from '../models/TravelRoute.js';
 
 export const createTravel = async (req, res) => {
   try {
@@ -44,6 +45,80 @@ export const createTravel = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
 };
+
+
+export const updateTravel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, destination, latitude, longitude, start_date, end_date, photos } = req.body;
+
+    const travel = await Travel.findByPk(id, { include: [TravelPhoto] });
+    if (!travel) return res.status(404).json({ message: 'Voyage non trouvé' });
+
+    if (travel.id_user !== req.user.id_user) {
+      return res.status(403).json({ message: 'Action non autorisée' });
+    }
+
+    travel.title = title || travel.title;
+    travel.description = description || travel.description;
+    travel.destination = destination || travel.destination;
+    travel.latitude = latitude !== undefined ? latitude : travel.latitude;
+    travel.longitude = longitude !== undefined ? longitude : travel.longitude;
+    travel.start_date = start_date || travel.start_date;
+    travel.end_date = end_date || travel.end_date;
+
+    await travel.save();
+
+    if (photos && Array.isArray(photos)) {
+      await TravelPhoto.destroy({ where: { id_travel: travel.id_travel } });
+
+      const photoRecords = photos.map(url => ({
+        id_travel: travel.id_travel,
+        url
+      }));
+      await TravelPhoto.bulkCreate(photoRecords);
+    }
+
+    const updatedTravel = await Travel.findByPk(travel.id_travel, { include: [TravelPhoto] });
+
+    res.json({ message: 'Voyage mis à jour avec succès', travel: updatedTravel });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};
+
+
+
+export const deleteTravel = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const travel = await Travel.findByPk(id);
+    if (!travel) return res.status(404).json({ message: 'Voyage non trouvé' });
+
+    if (travel.id_user !== req.user.id_user) {
+      return res.status(403).json({ message: 'Action non autorisée' });
+    }
+
+    
+    await TravelPhoto.destroy({ where: { id_travel: travel.id_travel } });
+
+    await TravelActivity.destroy({ where: { id_travel: travel.id_travel } });
+
+    await TravelRoute.destroy({ where: { id_travel: travel.id_travel } });
+
+    await travel.destroy();
+
+    res.json({ message: 'Voyage et toutes les données associées supprimés avec succès' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};
+
 
 
 export const getDestinations = async (req, res) => {
