@@ -11,9 +11,9 @@ import { validateAddTravelRoutes, validateUpdateTravelRoute } from '../middlewar
 
 const router = express.Router();
 
-router.post('/',validateTravel,authenticate,createTravel);
+router.post('/',authenticate,validateTravel,createTravel);
 router.get('/destinations',authenticate,getDestinations);
-router.put('/:id', validateTravel, authenticate, updateTravel);
+router.put('/:id', authenticate,validateTravel, updateTravel);
 router.delete('/:id',authenticate,deleteTravel);
 
 router.post('/:id/photos', authenticate,validateAddPhotos, addTravelPhotos);

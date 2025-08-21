@@ -120,8 +120,8 @@ CREATE TABLE travel_routes (
     destination VARCHAR(100) NOT NULL,
     latitude DECIMAL(12,9) NOT NULL,
     longitude DECIMAL(12,9) NOT NULL,
-    step_order INT NOT NULL, -- ordre dans l'itinéraire
-    description TEXT,        -- optionnel : nom ou info du point
+    step_order INT NOT NULL, 
+    description TEXT,        
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_travel) REFERENCES travels(id_travel) ON DELETE CASCADE,
