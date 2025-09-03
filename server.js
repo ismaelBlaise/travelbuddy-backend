@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { sequelize } from './config/database.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/user.js';
+import badgeRoutes from './routes/badge.js';
 
 dotenv.config();
 const app = express();
@@ -17,6 +20,10 @@ sequelize.sync({ alter: true })
   .then(() => console.log('Tables synchronized'));
 
 app.get('/', (req, res) => res.send('Hello TravelBuddy with ES Modules!'));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);  
+app.use('/api/badges', badgeRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
